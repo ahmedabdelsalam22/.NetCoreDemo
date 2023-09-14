@@ -1,6 +1,6 @@
 ﻿using SA_Project.Models;
 
-namespace SA_Project.AuthService.IAuthService
+namespace SA_Project.AuthService
 {
     public interface IAuthService
     {
