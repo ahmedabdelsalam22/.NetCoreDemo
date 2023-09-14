@@ -1,4 +1,4 @@
-﻿namespace SA_Project.Models
+﻿namespace SA_Project.Models.Dtos
 {
     public class LoginResponseDto
     {
