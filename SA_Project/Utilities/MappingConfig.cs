@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SA_Project.Models;
+using SA_Project.Models.Dtos;
 
 namespace SA_Project.Utilities
 {
@@ -8,6 +9,7 @@ namespace SA_Project.Utilities
         public MappingConfig() 
         {
             CreateMap<RegisterRequestDto, ApplicationUser>();
+            CreateMap<ApplicationUser, UserDto>();
         }
     }
 }
