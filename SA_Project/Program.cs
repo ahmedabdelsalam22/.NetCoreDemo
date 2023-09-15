@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SA_Project.AuthService;
 using SA_Project.Data;
 using SA_Project.Models;
 using SA_Project.Utilities;
@@ -23,6 +25,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 var app = builder.Build();
