@@ -108,7 +108,7 @@ namespace SA_Project.AuthService
                 return new LoginResponseDto() 
                 {
                     User = null,
-                    Token = ""
+                    Token = null
                 };
             }
 
