@@ -61,7 +61,7 @@ namespace SA_Project.Controllers
         {
             try
             {
-                Order order = await _orderRepository.GetById(tracked:false , filter:x=>x.Id == orderId);
+                Order order = await _orderRepository.GetById(tracked: false, filter: x => x.Id == orderId);
                 if (order == null)
                 {
                     return NotFound();
