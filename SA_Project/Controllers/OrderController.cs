@@ -58,10 +58,14 @@ namespace SA_Project.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> GetOrderById(int orderId)
+        public async Task<ActionResult<APIResponse>> GetOrderById(int? orderId)
         {
             try
             {
+                if (orderId == 0 || orderId == null) 
+                {
+                    return BadRequest();
+                }
                 Order order = await _orderRepository.GetById(tracked: false, filter: x => x.Id == orderId);
                 if (order == null)
                 {
@@ -94,12 +98,46 @@ namespace SA_Project.Controllers
             {
                 if (orderDto == null)
                 {
-                    return BadRequest();
+                    return NotFound();
                 }
 
                 Order order = _mapper.Map<Order>(orderDto);
 
                 await _orderRepository.Create(order);
+                await _orderRepository.Save();
+
+                _apiResponse.statusCode = HttpStatusCode.OK;
+                _apiResponse.IsSuccess = true;
+                return _apiResponse;
+            }
+            catch (Exception ex)
+            {
+                _apiResponse.statusCode = HttpStatusCode.BadRequest;
+                _apiResponse.IsSuccess = false;
+                _apiResponse.ErrorMessage = ex.Message;
+                return _apiResponse;
+            }
+        }
+
+        [HttpDelete("delete{orderId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> DeleteOrder(int? orderId) 
+        {
+            try 
+            {
+                if (orderId == 0 || orderId == null)
+                {
+                    return BadRequest();
+                }
+                Order order = await _orderRepository.GetById(tracked: false, filter: x => x.Id == orderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+                _orderRepository.Delete(order);
+                await _orderRepository.Save();
 
                 _apiResponse.statusCode = HttpStatusCode.OK;
                 _apiResponse.IsSuccess = true;
