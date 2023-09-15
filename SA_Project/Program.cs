@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using SA_Project.AuthService;
 using SA_Project.Data;
 using SA_Project.Models;
+using SA_Project.Repository;
+using SA_Project.Repository.IRepository;
 using SA_Project.Utilities;
 using System.Text;
 
@@ -75,6 +77,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 
 var app = builder.Build();
