@@ -116,9 +116,11 @@ namespace SA_Project.AuthService
 
             string token = JWTGenerateToken(user);
 
+            UserDto userDto = _mapper.Map<UserDto>(user);
+
             return new LoginResponseDto()
             {
-                User = user,
+                User = userDto,
                 Token = token
             };
 
