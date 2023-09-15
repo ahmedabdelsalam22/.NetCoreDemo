@@ -16,5 +16,9 @@ namespace SA_Project.Repository
         {
             _db.Update(order);
         }
+        public async Task Save()
+        {
+           await _db.SaveChangesAsync();
+        }
     }
 }

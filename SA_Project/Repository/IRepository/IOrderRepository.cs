@@ -6,5 +6,6 @@ namespace SA_Project.Repository.IRepository
     public interface IOrderRepository : IRepository<Order>
     {
         void Update(Order order);
+        Task Save();
     }
 }
