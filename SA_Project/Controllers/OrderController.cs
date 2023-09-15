@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SA_Project.Models;
 using SA_Project.Models.Order;
 using SA_Project.Repository.IRepository;
@@ -72,6 +73,36 @@ namespace SA_Project.Controllers
                 _apiResponse.statusCode = HttpStatusCode.OK;
                 _apiResponse.IsSuccess = true;
                 _apiResponse.Result = orderDto;
+                return _apiResponse;
+            }
+            catch (Exception ex)
+            {
+                _apiResponse.statusCode = HttpStatusCode.BadRequest;
+                _apiResponse.IsSuccess = false;
+                _apiResponse.ErrorMessage = ex.Message;
+                return _apiResponse;
+            }
+        }
+
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> CreateOrder([FromBody] OrderDto orderDto)
+        {
+            try 
+            {
+                if (orderDto == null)
+                {
+                    return BadRequest();
+                }
+
+                Order order = _mapper.Map<Order>(orderDto);
+
+                await _orderRepository.Create(order);
+
+                _apiResponse.statusCode = HttpStatusCode.OK;
+                _apiResponse.IsSuccess = true;
                 return _apiResponse;
             }
             catch (Exception ex)
