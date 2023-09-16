@@ -1,3 +1,5 @@
+using SA_Project.Web;
+using SA_Project.Web.Service;
 using SA_Project.Web.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,10 @@ builder.Services.AddControllersWithViews();
 
 SD.ApiUrl = builder.Configuration["ServiceUrls:ApiUrl"]!;
 
+builder.Services.AddHttpClient<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 var app = builder.Build();
 
