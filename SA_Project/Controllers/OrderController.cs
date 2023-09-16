@@ -56,7 +56,7 @@ namespace SA_Project.Controllers
             }
         }
 
-        [HttpGet("order{orderId}")]
+        [HttpGet("order/{orderId}")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,7 +122,7 @@ namespace SA_Project.Controllers
             }
         }
 
-        [HttpDelete("delete{orderId}")]
+        [HttpDelete("delete/{orderId}")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
