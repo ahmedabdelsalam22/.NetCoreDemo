@@ -1,7 +1,12 @@
+using SA_Project.Web.Utility;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+SD.ApiUrl = builder.Configuration["ApiSettings:ApiUrl"]!;
+
 
 var app = builder.Build();
 
