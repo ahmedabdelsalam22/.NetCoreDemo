@@ -29,7 +29,7 @@ namespace SA_Project.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetAllOrders()
+        public async Task<ActionResult<List<OrderDto>>> GetAllOrders()
         {
             try
             {
@@ -54,7 +54,7 @@ namespace SA_Project.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetOrderById(int? orderId)
+        public async Task<ActionResult<OrderDto>> GetOrderById(int? orderId)
         {
             try
             {
