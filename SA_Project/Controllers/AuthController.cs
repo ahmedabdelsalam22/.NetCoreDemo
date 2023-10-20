@@ -10,7 +10,7 @@ using System.Net;
 
 namespace SA_Project.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
