@@ -1,7 +1,7 @@
 ﻿using SA_Project.Data;
 using SA_Project.Models.Order;
 
-namespace SA_Project.Repository.IRepository
+namespace SA_Project_API.Services.Repository.IRepository
 {
     public interface IOrderRepository : IRepository<Order>
     {

@@ -11,6 +11,5 @@ namespace SA_Project.Models.Order
         public string Street { get; set; }
         public string DeviceName { get; set; }
         public string IssueDescription { get; set; }
-
     }
 }

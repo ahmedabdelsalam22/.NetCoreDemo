@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SA_Project.Data;
-using SA_Project.Repository.IRepository;
+using SA_Project_API.Services.Repository.IRepository;
 using System.Linq.Expressions;
 
-namespace SA_Project.Repository
+namespace SA_Project_API.Services.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -29,7 +29,7 @@ namespace SA_Project.Repository
         {
             IQueryable<T> query = _dbSet;
 
-            if (!tracked) 
+            if (!tracked)
             {
                 query = query.AsNoTracking();
             }
@@ -39,7 +39,7 @@ namespace SA_Project.Repository
         public async Task<T> GetById(bool tracked = true, Expression<Func<T, bool>>? filter = null)
         {
             IQueryable<T> query = _dbSet;
-            if (filter != null) 
+            if (filter != null)
             {
                 query = query.Where(filter);
             }

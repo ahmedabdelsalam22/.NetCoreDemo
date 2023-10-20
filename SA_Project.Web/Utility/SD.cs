@@ -2,7 +2,8 @@
 {
     public class SD
     {
-        public enum ApiType { GET,POST,PUT,DELETE }
-        public static string ApiUrl = "";
+        public static string ApiUrl { get; set; }
+
+        public const string TokenCookie = "JWTToken";
     }
 }

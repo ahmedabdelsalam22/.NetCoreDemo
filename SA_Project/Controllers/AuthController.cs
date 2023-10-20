@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SA_Project.AuthService;
 using SA_Project.Data;
 using SA_Project.Models;
 using SA_Project.Models.Dtos;
+using SA_Project_API.Services.AuthService;
 using System.Net;
 
 namespace SA_Project.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace SA_Project.Controllers
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Login(LoginRequestDto dto) 
+        public async Task<ActionResult> Login(LoginRequestDto dto) 
         {
             try
             {
@@ -38,24 +38,18 @@ namespace SA_Project.Controllers
                     return BadRequest();
                 }
 
-                _apiResponse.statusCode = HttpStatusCode.OK;
-                _apiResponse.IsSuccess = true;
-                _apiResponse.Result = responseDto;
-                return _apiResponse;
+                return Ok(responseDto);
             }
             catch (Exception ex) 
             {
-                _apiResponse.statusCode = HttpStatusCode.BadRequest;
-                _apiResponse.IsSuccess = false;
-                _apiResponse.ErrorMessage = ex.Message;
-                return _apiResponse;
+                return BadRequest(ex.ToString());
             }
         }
 
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Register(RegisterRequestDto dto) 
+        public async Task<ActionResult> Register(RegisterRequestDto dto) 
         {
             try
             {
@@ -65,17 +59,11 @@ namespace SA_Project.Controllers
                     return BadRequest();
                 }
 
-                _apiResponse.statusCode = HttpStatusCode.OK;
-                _apiResponse.IsSuccess = true;
-                _apiResponse.Result = userDto;
-                return _apiResponse;
+                return Ok();
             }
             catch (Exception ex)
             {
-                _apiResponse.statusCode = HttpStatusCode.BadRequest;
-                _apiResponse.IsSuccess = false;
-                _apiResponse.ErrorMessage = ex.Message;
-                return _apiResponse;
+                return BadRequest(ex.ToString());
             }
         }
 

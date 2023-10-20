@@ -1,8 +1,8 @@
 ﻿using SA_Project.Data;
 using SA_Project.Models.Order;
-using SA_Project.Repository.IRepository;
+using SA_Project_API.Services.Repository.IRepository;
 
-namespace SA_Project.Repository
+namespace SA_Project_API.Services.Repository
 {
     public class OrderRepository : Repository<Order>, IOrderRepository
     {
@@ -18,7 +18,7 @@ namespace SA_Project.Repository
         }
         public async Task Save()
         {
-           await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SA_Project.Models;
 using SA_Project.Models.Order;
-using SA_Project.Repository.IRepository;
+using SA_Project_API.Services.Repository.IRepository;
+using SA_Project_API.Utilities;
 using System.Net;
 
 namespace SA_Project.Controllers
@@ -16,21 +17,19 @@ namespace SA_Project.Controllers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
-        private readonly APIResponse _apiResponse;
 
         public OrderController(IOrderRepository orderRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
-            _apiResponse = new APIResponse();
         }
 
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles =$"{SD.ADMIN}")]
         [HttpGet("getAllOrders")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> GetAllOrders()
+        public async Task<ActionResult<List<OrderDto>>> GetAllOrders()
         {
             try
             {
@@ -42,26 +41,20 @@ namespace SA_Project.Controllers
 
                 List<OrderDto> orderDtos = _mapper.Map<List<OrderDto>>(orders);
 
-                _apiResponse.statusCode = HttpStatusCode.OK;
-                _apiResponse.IsSuccess = true;
-                _apiResponse.Result = orderDtos;
-                return _apiResponse;
+                return Ok(orderDtos);
             }
             catch (Exception ex)
             {
-                _apiResponse.statusCode = HttpStatusCode.BadRequest;
-                _apiResponse.IsSuccess = false;
-                _apiResponse.ErrorMessage = ex.Message;
-                return _apiResponse;
+                return BadRequest(ex.ToString());
             }
         }
 
         [HttpGet("order/{orderId}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = $"{SD.ADMIN}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> GetOrderById(int? orderId)
+        public async Task<ActionResult<OrderDto>> GetOrderById(int? orderId)
         {
             try
             {
@@ -77,25 +70,20 @@ namespace SA_Project.Controllers
 
                 OrderDto orderDto = _mapper.Map<OrderDto>(order);
 
-                _apiResponse.statusCode = HttpStatusCode.OK;
-                _apiResponse.IsSuccess = true;
-                _apiResponse.Result = orderDto;
-                return _apiResponse;
+                return Ok(orderDto);
             }
             catch (Exception ex)
             {
-                _apiResponse.statusCode = HttpStatusCode.BadRequest;
-                _apiResponse.IsSuccess = false;
-                _apiResponse.ErrorMessage = ex.Message;
-                return _apiResponse;
+                return BadRequest(ex.ToString());
             }
         }
 
+        [Authorize]
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> CreateOrder([FromBody] OrderDto orderDto)
+        public async Task<ActionResult> CreateOrder([FromBody] OrderDto orderDto)
         {
             try 
             {
@@ -109,25 +97,20 @@ namespace SA_Project.Controllers
                 await _orderRepository.Create(order);
                 await _orderRepository.Save();
 
-                _apiResponse.statusCode = HttpStatusCode.OK;
-                _apiResponse.IsSuccess = true;
-                return _apiResponse;
+                return Ok(order);
             }
             catch (Exception ex)
             {
-                _apiResponse.statusCode = HttpStatusCode.BadRequest;
-                _apiResponse.IsSuccess = false;
-                _apiResponse.ErrorMessage = ex.Message;
-                return _apiResponse;
+                return BadRequest(ex.ToString());
             }
         }
 
         [HttpDelete("delete/{orderId}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = $"{SD.ADMIN}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> DeleteOrder(int? orderId) 
+        public async Task<ActionResult> DeleteOrder(int? orderId) 
         {
             try 
             {
@@ -143,16 +126,11 @@ namespace SA_Project.Controllers
                 _orderRepository.Delete(order);
                 await _orderRepository.Save();
 
-                _apiResponse.statusCode = HttpStatusCode.OK;
-                _apiResponse.IsSuccess = true;
-                return _apiResponse;
+                return Ok();
             }
             catch (Exception ex)
             {
-                _apiResponse.statusCode = HttpStatusCode.BadRequest;
-                _apiResponse.IsSuccess = false;
-                _apiResponse.ErrorMessage = ex.Message;
-                return _apiResponse;
+                return BadRequest(ex.ToString());
             }
         }
     }

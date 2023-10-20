@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SA_Project.AuthService;
 using SA_Project.Data;
 using SA_Project.Models;
 using SA_Project.Models.Dtos;
 using SA_Project.Utilities;
+using SA_Project_API.Utilities;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SA_Project.AuthService
+namespace SA_Project_API.Services.AuthService
 {
     public class AuthService : IAuthService
     {
@@ -20,7 +21,7 @@ namespace SA_Project.AuthService
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _db;
-        public AuthService(IMapper mapper, UserManager<ApplicationUser> userManager,ApplicationDbContext db,
+        public AuthService(IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationDbContext db,
             RoleManager<IdentityRole> roleManager)
         {
             _mapper = mapper;
@@ -31,19 +32,19 @@ namespace SA_Project.AuthService
 
         public async Task<bool> AssignRole(string email, string role)
         {
-            ApplicationUser? user = await _db.ApplicationUsers.FirstOrDefaultAsync(x=>x.Email!.ToLower() == email.ToLower());
+            ApplicationUser? user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Email!.ToLower() == email.ToLower());
 
-            if (user == null) 
+            if (user == null)
             {
                 return false;
             }
 
-            if (!_roleManager.RoleExistsAsync(role).GetAwaiter().GetResult()) 
+            if (!_roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
             {
                 _roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
             }
-            var IsRoleAdded = await _userManager.AddToRoleAsync(user , role);
-            if (!IsRoleAdded.Succeeded) 
+            var IsRoleAdded = await _userManager.AddToRoleAsync(user, role);
+            if (!IsRoleAdded.Succeeded)
             {
                 return false;
             }
@@ -52,15 +53,15 @@ namespace SA_Project.AuthService
 
         public async Task<bool> IsUniqueUser(string username)
         {
-            ApplicationUser? user = await _db.ApplicationUsers.FirstOrDefaultAsync(x=>x.UserName!.ToLower() == username.ToLower());
-            if (user == null) 
+            ApplicationUser? user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName!.ToLower() == username.ToLower());
+            if (user == null)
             {
                 return true;
             }
             return false;
         }
 
-        public string JWTGenerateToken(ApplicationUser user)
+        public async Task<string> JWTGenerateToken(ApplicationUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -68,13 +69,16 @@ namespace SA_Project.AuthService
 
             // claims list 
 
+            var roles = await _userManager.GetRolesAsync(user);
+
             List<Claim> claims = new()
                 {
                     new Claim(JwtRegisteredClaimNames.Name , user.Name),
                     new Claim(JwtRegisteredClaimNames.Email , user.Email!),
                     new Claim(JwtRegisteredClaimNames.Sub , user.Id),
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
                 };
-
+            
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
@@ -90,22 +94,22 @@ namespace SA_Project.AuthService
         {
             bool isUnique = await IsUniqueUser(dto.Username);
 
-            if(isUnique)
+            if (isUnique)
             {
-                return new LoginResponseDto() 
+                return new LoginResponseDto()
                 {
                     User = null,
                     Token = ""
                 };
             }
 
-            ApplicationUser user = await _db.ApplicationUsers.FirstAsync(x=>x.UserName!.ToLower() == dto.Username.ToLower());
+            ApplicationUser user = await _db.ApplicationUsers.FirstAsync(x => x.UserName!.ToLower() == dto.Username.ToLower());
 
 
-            bool IsPasswordCorrect = await _userManager.CheckPasswordAsync(user,dto.Password);
-            if (!IsPasswordCorrect) 
+            bool IsPasswordCorrect = await _userManager.CheckPasswordAsync(user, dto.Password);
+            if (!IsPasswordCorrect)
             {
-                return new LoginResponseDto() 
+                return new LoginResponseDto()
                 {
                     User = null,
                     Token = null
@@ -114,7 +118,7 @@ namespace SA_Project.AuthService
 
             // generate token 
 
-            string token = JWTGenerateToken(user);
+            string token = await JWTGenerateToken(user);
 
             UserDto userDto = _mapper.Map<UserDto>(user);
 
@@ -130,15 +134,15 @@ namespace SA_Project.AuthService
         {
             ApplicationUser user = _mapper.Map<ApplicationUser>(dto);
 
-            var result = await _userManager.CreateAsync(user , dto.Password);
+            var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (result.Succeeded)
             {
                 // assign role
 
-                await AssignRole(dto.Email , SD.CUSTOMER);
+                await AssignRole(dto.Email, SD.CUSTOMER);
 
-                ApplicationUser userFromDb = _db.ApplicationUsers.First(x=>x.UserName!.ToLower() == dto.Username.ToLower());
+                ApplicationUser userFromDb = _db.ApplicationUsers.First(x => x.UserName!.ToLower() == dto.Username.ToLower());
 
                 UserDto userDto = _mapper.Map<UserDto>(userFromDb);
 
