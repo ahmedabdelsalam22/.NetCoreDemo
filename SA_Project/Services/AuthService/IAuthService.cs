@@ -6,14 +6,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SA_Project.AuthService
+namespace SA_Project_API.Services.AuthService
 {
     public interface IAuthService
     {
         Task<LoginResponseDto> Login(LoginRequestDto dto);
         Task<UserDto> Register(RegisterRequestDto dto);
-        Task<bool> AssignRole(string email , string role);
+        Task<bool> AssignRole(string email, string role);
         Task<bool> IsUniqueUser(string username);
-        string JWTGenerateToken(ApplicationUser user);
+        Task<string> JWTGenerateToken(ApplicationUser user);
     }
 }
