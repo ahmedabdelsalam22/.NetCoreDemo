@@ -11,7 +11,7 @@ using System.Net;
 
 namespace SA_Project.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace SA_Project.Controllers
         }
 
         [Authorize(Roles =$"{SD.ADMIN}")]
-        [HttpGet("getAllOrders")]
+        [HttpGet("orders")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -79,7 +79,7 @@ namespace SA_Project.Controllers
         }
 
         [Authorize]
-        [HttpPost("create")]
+        [HttpPost("order/create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -105,7 +105,7 @@ namespace SA_Project.Controllers
             }
         }
 
-        [HttpDelete("delete/{orderId}")]
+        [HttpDelete("order/delete/{orderId}")]
         [Authorize(Roles = $"{SD.ADMIN}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
