@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 using RestSharp.Authenticators;
 using SA_Project.Web.Service.IService;
+using SA_Project.Web.Utility;
 
 namespace RestCharpCourse.Services
 {
@@ -13,7 +14,7 @@ namespace RestCharpCourse.Services
 
         public RestService(ITokenProvider tokenProvider)
         {
-            _restClient = new RestClient();
+            _restClient = new RestClient(SD.ApiUrl);
             _tokenProvider = tokenProvider;
         }
 
@@ -41,13 +42,10 @@ namespace RestCharpCourse.Services
 
             var request = new RestRequest(url, Method.Get);
 
-
             if (withBearer)
             {
                 request.AddHeader("Authorization", $"Bearer {_tokenProvider.GetToken()}"); // read token from method parameter
             }
-
-
 
             //// one way 
             var response = await _restClient.ExecuteGetAsync<List<T>>(request);

@@ -20,6 +20,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 builder.Services.AddScoped<IAuthRestService, AuthRestService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddScoped<IOrderRestService, OrderRestService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
