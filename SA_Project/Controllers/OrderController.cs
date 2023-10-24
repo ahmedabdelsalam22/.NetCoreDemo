@@ -83,7 +83,7 @@ namespace SA_Project.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> CreateOrder([FromBody] OrderDto orderDto)
+        public async Task<ActionResult> CreateOrder([FromBody] OrderCreateDto orderDto)
         {
             try 
             {

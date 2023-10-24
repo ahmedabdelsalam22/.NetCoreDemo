@@ -19,7 +19,8 @@ namespace SA_Project.Web.Controllers
             _orderRest = orderRest;
         }
 
-        [Authorize]
+        
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> Index()
         {
             List<Order> orders = await _orderRest.GetAsync(url: "/api/orders");
@@ -37,14 +38,22 @@ namespace SA_Project.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(Order order)
         {
-            await _orderRest.PostAsync(url: "/api/order/create", data: order);
-
-            return RedirectToAction("Index");
+           var response = await _orderRest.PostAsync(url: "/api/order/create", data: order);
+            if (response.IsSuccessful) 
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
         }
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrder(int orderId)
         {
-            await _orderRest.Delete(url: $"/api/order/delete/{orderId}");
+            var response =  await _orderRest.Delete(url: $"/api/order/delete/{orderId}");
+
+            if (response.IsSuccessful) 
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return RedirectToAction(nameof(Index));
         }
     }
