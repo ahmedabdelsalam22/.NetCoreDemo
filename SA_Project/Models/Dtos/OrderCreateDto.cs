@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SA_Project.Models.Order
+﻿namespace SA_Project_API.Models.Dtos
 {
-    public class OrderDto
+    public class OrderCreateDto
     {
-
-        public int Id { get; set; }
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
         public string City { get; set; }

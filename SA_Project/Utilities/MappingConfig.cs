@@ -12,6 +12,7 @@ namespace SA_Project.Utilities
             CreateMap<RegisterRequestDto, ApplicationUser>();
             CreateMap<ApplicationUser, UserDto>();
             CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<OrderCreateDto, Order>();
         }
     }
 }
